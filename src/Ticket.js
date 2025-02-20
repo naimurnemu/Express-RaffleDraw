@@ -4,7 +4,6 @@ const shortid = require("shortid");
  * Ticket constractor holds ticket details
  * @param {string} username - username of ticket owner
  * @param {number} price - price of the ticket
- * @instance Ticket object
  */
 class Ticket {
   constructor(username, price) {
