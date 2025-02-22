@@ -2,7 +2,6 @@ const Ticket = require("./Ticket");
 const { readFile, writeFile } = require("./utils");
 
 const tickets = Symbol("tickets");
-
 class TicketCollection {
   constructor() {
     this[tickets] = [];
@@ -14,7 +13,7 @@ class TicketCollection {
    * @param {number} price 
    * @return {Ticket}
    */
-  createTicket(username, price) {
+  create(username, price) {
     const ticket = new Ticket(username, price);
     this[tickets].push(ticket);
     return ticket;
@@ -79,9 +78,12 @@ class TicketCollection {
    */
   updateById(ticketId, newBody) {
     const ticket = this.findById(ticketId);
-    ticket.username = newBody.username ?? ticket.username;
-    ticket.price = newBody.price ?? ticket.price;
-    ticket.updated_at = new Date();
+    if (ticket) {
+      ticket.username = newBody.username ?? ticket.username;
+      ticket.price = newBody.price ?? ticket.price;
+      ticket.updated_at = new Date();
+    }
+
     return ticket;
   }
 
@@ -165,5 +167,5 @@ class TicketCollection {
   }
 }
 
-const collection = new TicketCollection();
-module.exports = collection;
+const ticketCollection = new TicketCollection();
+module.exports = ticketCollection;
