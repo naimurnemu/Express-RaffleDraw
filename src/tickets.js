@@ -21,6 +21,22 @@ class TicketCollection {
   }
 
   /**
+   * Create bulk tickets
+   * @param {string} username 
+   * @param {number} price 
+   * @param {number} quantity 
+   * @returns {Ticket[]}
+   */
+  createBulk(username, price, quantity) {
+    const tickets = [];
+    for (let i = 0; i < quantity; i++) {
+      const ticket = this.createTicket(username, price);
+      tickets.push(ticket);
+    }
+    return tickets;
+  }
+
+  /**
    * Return All tickets
    * @returns {Ticket[]}
    */
@@ -63,10 +79,28 @@ class TicketCollection {
    */
   updateById(ticketId, newBody) {
     const ticket = this.findById(ticketId);
-    ticket.username = newTicketBody.username ?? ticket.username;
-    ticket.price = newTicketBody.price ?? ticket.price;
+    ticket.username = newBody.username ?? ticket.username;
+    ticket.price = newBody.price ?? ticket.price;
     ticket.updated_at = new Date();
     return ticket;
+  }
+
+  /**
+   * update all tickets by username
+   * @param {string} username 
+   * @param {{username: string, price: number}} ticketBody 
+   * @returns {Ticket[]}
+   */
+  updateBulk(username, ticketBody) {
+    const userTickets = this.findByUsername(username);
+    userTickets.forEach(
+
+      /**
+       * @param {Ticket} ticket 
+       */
+      (ticket) => this.updateById(ticket.ticket_id, ticketBody));
+
+    return tickets;
   }
 
   /**
@@ -88,6 +122,46 @@ class TicketCollection {
       this[tickets].splice(index, 1);
       return true;
     }
+  }
+
+  /**
+   * delete all tickets by username
+   * @param {string} username 
+   * @returns {boolean[]}
+   */
+  deleteBulk(username) {
+    const userTickets = this.findByUsername(username);
+    const deletedResult = userTickets.map(
+      /**
+       * @param {Ticket} ticket 
+       */
+      (ticket) => this.deleteById(ticket.ticket_id));
+    return deletedResult;
+  }
+
+  /**
+   * find winners
+   * @param {number} winnerCount
+   * @returns {Ticket[]} 
+   */
+  draw(winnerCount) {
+    const winnerIndexes = new Array(winnerCount);
+
+    let winnerIndex = 0;
+    while (winnerIndex < winnerCount) {
+      let ticketIndex = Math.floor(Math.random() * this[tickets].length);
+      if (!winnerIndexes.includes(ticketIndex)) {
+        winnerIndexes[winnerIndex++] = ticketIndex;
+        continue;
+      }
+    }
+
+    return winnerIndexes.map(
+      /**
+       * @param {number} index 
+       */
+      (index) => this[tickets][index]
+    );
   }
 }
 
